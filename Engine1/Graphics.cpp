@@ -26,7 +26,8 @@ namespace engine1 {
 
 
   void Graphics::Start(void) {
-
+    renderTargetValid = true;
+    started = true;
   }
 
   void Graphics::Stop(void) {

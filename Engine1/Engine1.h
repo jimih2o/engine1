@@ -63,7 +63,7 @@ namespace engine1 {
     }
 
     template <typename ComponentType>
-    ComponentType* GetNamedObject(String const& name) {
+    ComponentType* GetObject(String const& name) {
       return namedObjects[name];
     }
 

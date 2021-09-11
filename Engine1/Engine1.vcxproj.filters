@@ -14,12 +14,18 @@
     <ClInclude Include="Engine1.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Network.h" />
+    <ClInclude Include="Socket.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="Network.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Socket.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

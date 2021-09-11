@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine1.h"
+#include "Socket.h"
 
 #include <iostream>
 
@@ -8,9 +9,9 @@ namespace engine1 {
   class NetworkClient : public iEngineObject {
   public:
     struct Config {
-      const int     port;
-      String        hostname;
-      std::ostream &log;
+      const int       port;
+      Socket::Address hostAddress;
+      std::ostream &  log;
     };
 
     NetworkClient(Config const& config);
@@ -19,6 +20,11 @@ namespace engine1 {
     virtual void Stop(void);
     virtual void Join(void);
     virtual bool IsContextValid(void);
+
+  private:
+    Config config;
+    Socket socket;
+    bool   valid = false;
   };
 
   class NetworkServer : public iEngineObject {
@@ -34,5 +40,9 @@ namespace engine1 {
     virtual void Stop(void);
     virtual void Join(void);
     virtual bool IsContextValid(void);
+
+  private:
+    Config config;
+    Socket socket;
   };
 }
