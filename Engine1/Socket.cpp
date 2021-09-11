@@ -72,8 +72,8 @@ namespace engine1 {
 
     bytesRead = ret;
 
-    from = ntohl(addr_in.sin_addr.s_addr);
-    port = ntohs(addr_in.sin_port);
+    from = (uint32_t)ntohl(addr_in.sin_addr.s_addr);
+    port = (uint16_t)ntohs(addr_in.sin_port);
 
     return ReceivedState::Success;
   }

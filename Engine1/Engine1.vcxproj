@@ -140,8 +140,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Engine1.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Network.h" />
+    <ClInclude Include="Queue.h" />
     <ClInclude Include="Socket.h" />
   </ItemGroup>
   <ItemGroup>

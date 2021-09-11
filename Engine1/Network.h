@@ -2,8 +2,11 @@
 
 #include "Engine1.h"
 #include "Socket.h"
+#include "Queue.h"
+#include "Event.h"
 
 #include <iostream>
+#include <thread>
 
 namespace engine1 {
   class NetworkClient : public iEngineObject {
@@ -25,6 +28,15 @@ namespace engine1 {
     Config config;
     Socket socket;
     bool   valid = false;
+    bool   killThread = false;
+    std::thread netThread;
+    const enum {
+      TX_EVENT = Event::FIRST,
+      RX_EVENT
+    };
+    Event events;
+
+    void commLoop(void);
   };
 
   class NetworkServer : public iEngineObject {

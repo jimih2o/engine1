@@ -2,6 +2,8 @@
 
 
 #include <vector>
+#include <algorithm>
+#include <functional>
 
 namespace engine1 {
   // GUID {F06A8644-4BCB-4862-BBCC-635F8BC9D29C}
@@ -103,7 +105,7 @@ namespace engine1 {
       for (uint8_t byte : packetKey)
         bytes.push_back(byte);
 
-      // fill Sno, length with 0's
+      // fill with 0's
       while (bytes.size() < payloadOffset)
         bytes.push_back(0);
 
@@ -187,23 +189,50 @@ namespace engine1 {
     recv.resize(recv.capacity());
     uint16_t port;
     uint32_t length;
-    if (socket.Receive(config.hostAddress, port, recv.data(), length, recv.capacity()) == Socket::ReceivedState::ErrorDetected) {
+    Socket::Address from;
+    if (socket.Receive(from, port, recv.data(), length, recv.capacity()) == Socket::ReceivedState::ErrorDetected) {
       config.log << "Could not receive from host" << config.hostAddress << "\n";
     }
     else {
+      config.log << "From " << ToString(from) << ":" << port << " -- ";
       for (auto x : recv)
         config.log << (char)x;
       config.log << "\n";
     }
 
+    netThread = std::thread(std::bind(&NetworkClient::commLoop, this));
+  }
+
+  void NetworkClient::commLoop(void) {
+    while (valid && !killThread) {
+      events.WaitForEvent();
+
+      while (events.IsEventWaiting()) {
+        Event::Type event = events.GetNextEvent();
+        
+        switch (event) {
+        case TX_EVENT:
+
+          break;
+
+        case RX_EVENT:
+
+          break;
+
+        default:
+          config.log << "Error, unhandled network event type " << static_cast<uint32_t>(event) << "!\n";
+          break;
+        }
+      }
+    }
   }
 
   void NetworkClient::Stop(void) {
-
+    killThread = true;
   }
 
   void NetworkClient::Join(void) {
-
+    netThread.join();
   }
 
   bool NetworkClient::IsContextValid(void) {

@@ -7,6 +7,10 @@
 namespace engine1 {
 
   typedef std::string String;
+  template < typename T >
+  String ToString(T const&in) {
+    return std::to_string(in);
+  }
 
   class iComponent {
     std::map<String, iComponent*> components;
