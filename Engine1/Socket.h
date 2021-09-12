@@ -36,7 +36,7 @@ namespace engine1 {
     Socket();
     ~Socket();
 
-    bool BindPort(uint16_t port);
+    bool BindPort(uint16_t port, bool waitForMessage);
     bool Send(Address const& addr, uint16_t port, std::vector<uint8_t> const& bytes);
     ReceivedState Receive(Address& from, uint16_t& port, uint8_t* bytes, uint32_t& bytesRead, uint32_t maxPacketLength_bytes);
   };

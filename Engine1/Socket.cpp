@@ -15,7 +15,7 @@ namespace engine1 {
     ++runtimeCounter;
   }
 
-  bool Socket::BindPort(uint16_t port) {
+  bool Socket::BindPort(uint16_t port, bool waitForMessage) {
     sockaddr_in address;
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
@@ -28,7 +28,13 @@ namespace engine1 {
     boundPort = port;
 
 #ifdef _WIN32
-    DWORD nonBlocking = 1;
+    DWORD nonBlocking;
+
+    if (waitForMessage)
+      nonBlocking = 0;
+    else
+      nonBlocking = 1;
+
     if (ioctlsocket(handle, FIONBIO, &nonBlocking) != 0) {
       return false;
     }
@@ -67,7 +73,13 @@ namespace engine1 {
 
     int ret = recvfrom(handle, (char*)bytes, maxPacketLength_bytes, 0, (sockaddr*)&addr_in, &addr_in_size);
 
-    if (ret < 0) return ReceivedState::ErrorDetected;
+    if (ret < 0) {
+#ifdef _WIN32
+      int errorCode = WSAGetLastError();
+      printf("SOCKET::RECEIVE ERROR CODE %d\n", errorCode);
+#endif
+      return ReceivedState::ErrorDetected;
+    }
     if (ret == 0) return ReceivedState::QueueEmpty;
 
     bytesRead = ret;

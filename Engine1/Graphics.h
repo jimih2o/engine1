@@ -2,6 +2,8 @@
 
 #include "Engine1.h"
 
+#include <thread>
+
 namespace engine1 {
   class Graphics : public iEngineObject {
   public:
@@ -16,16 +18,21 @@ namespace engine1 {
 
     void UpdateConfig(Config const& newConfig);
 
-    virtual void Start(void);
-    virtual void Stop(void);
-    virtual bool IsContextValid(void);
+    virtual void Start(void) override;
+    virtual void Stop(void) override;
+    virtual bool IsContextValid(void) override;
+    virtual void Join(void) override;
 
   private:
-    Config config;
-    bool   started;
-    bool   renderTargetValid;
+    Config      config;
+    bool        started = false;
+    bool        renderTargetValid = false;
+    bool        killThread = false;
+    std::thread drawThread;
 
     void PauseRender(void);
     void Restart(void);
+
+    void drawLoop(void);
   };
 }

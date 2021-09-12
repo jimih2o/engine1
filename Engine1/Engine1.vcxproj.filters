@@ -23,6 +23,7 @@
     <ClInclude Include="Event.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="Packet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp">
@@ -32,6 +33,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="Socket.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkClient.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkServer.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
