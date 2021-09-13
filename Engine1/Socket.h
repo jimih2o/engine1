@@ -12,7 +12,9 @@
 namespace engine1 {
   // low level accessor for portability reasons
   class Socket {
-    int handle = -1;
+#ifdef _WIN32
+    SOCKET handle = -1;
+#endif
     uint16_t boundPort = 0;
 
   public:

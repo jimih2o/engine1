@@ -61,7 +61,7 @@ namespace engine1 {
     address_in.sin_addr.s_addr = htonl(addr);
     address_in.sin_port = htons(port);
 
-    int len = sendto(handle, (const char*)bytes.data(), bytes.size(), 0, (sockaddr*)&address_in, sizeof(address_in));
+    int len = sendto(handle, (const char*)bytes.data(), static_cast<int>(bytes.size()), 0, (sockaddr*)&address_in, sizeof(address_in));
 
     return len == bytes.size();
   }
