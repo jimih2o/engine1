@@ -24,6 +24,7 @@ namespace engine1 {
     static const uint32_t payloadOffset = crcOffset + sizeof(uint32_t);
 
     std::vector<uint8_t> bytes;
+    bool isCritical = false;
 
     void ComputeHeader() {
       // determine length
@@ -75,6 +76,16 @@ namespace engine1 {
         bytes.push_back(0x00);
 
       ComputeHeader();
+    }
+
+    // forces retries for packet
+    // use SPARINGLY
+    void SetCritical() {
+      isCritical = true;
+    }
+
+    bool IsCritical() const {
+      return isCritical;
     }
 
     static bool IsValid(uint8_t const* bytes, uint16_t len) {
@@ -169,24 +180,37 @@ namespace engine1 {
       ComputeHeader();
     }
 
-    void Append(std::vector<uint8_t> const& data) {
-      // TODO validate paylaod size
+    bool Append(std::vector<uint8_t> const& data) {
+      if (bytes.size() + data.size() > MAX_SIZE) {
+        return false;
+      }
+
       bytes.reserve(bytes.size() + data.size());
 
       for (uint8_t byte : data)
         bytes.push_back(byte);
 
       ComputeHeader();
+      return true;
     }
 
-    void Append(uint8_t const* data, uint16_t length) {
-      // todo validate payload size
+    template <typename T>
+    bool Append(T const* object, uint16_t len) {
+      return Append((uint8_t const*)object, len);
+    }
+
+    bool Append(uint8_t const* data, uint16_t length) {
+      if (length + bytes.size() > MAX_SIZE)
+        return false;
+
       bytes.reserve(bytes.size() + length);
 
       for (uint32_t i = 0; i < length; ++i)
         bytes.push_back(data[i]);
 
       ComputeHeader();
+
+      return true;
     }
   };
 

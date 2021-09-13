@@ -24,6 +24,7 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="Packet.h" />
+    <ClInclude Include="NetEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp">

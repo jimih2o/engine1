@@ -5,6 +5,7 @@
 #include "Queue.h"
 #include "Event.h"
 #include "Packet.h"
+#include "NetEvent.h"
 
 #include <iostream>
 #include <thread>
@@ -20,7 +21,7 @@ namespace engine1 {
     Packet          packet;
   };
 
-  class NetworkClient : public iEngineObject {
+  class NetworkClient : public iEngineObject, public iNetEventManager {
   public:
     struct Config {
       const uint16_t  txPort;
@@ -36,7 +37,8 @@ namespace engine1 {
     virtual void Join(void);
     virtual bool IsContextValid(void);
 
-    void SendRawDataToHost(uint8_t const* bytes, uint16_t size_bytes);
+  protected:
+    virtual void AsyncProcessEventTransmission_External(iNetEvent* pEvent, uint8_t const* bytes, uint16_t len) override;
 
   private:
     Config      config;

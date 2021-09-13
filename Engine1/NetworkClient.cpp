@@ -23,15 +23,6 @@ namespace engine1 {
     rxThread = std::thread(std::bind(&NetworkClient::rxLoop, this));
   }
 
-  void NetworkClient::SendRawDataToHost(uint8_t const* bytes, uint16_t size_bytes) {
-    Packet dgram;
-
-    dgram.Append(bytes, size_bytes);
-
-    txQueue.Push(dgram);
-    events.Notify(TX_EVENT);
-  }
-
   void NetworkClient::commLoop(void) {
     while (valid && !killThread) {
       events.WaitForEvent();
@@ -88,6 +79,17 @@ namespace engine1 {
     }
 
     delete[]buffer;
+  }
+
+  void NetworkClient::AsyncProcessEventTransmission_External(iNetEvent* pEvent, uint8_t const* bytes, uint16_t len) {
+    // we are the client, so we only send data to the server node
+    Packet p;
+    Event::Type e = pEvent->GetEventIdentifier();
+    p.Append(&e, sizeof(Event::Type));
+    p.Append(bytes, len);
+
+    txQueue.Push(p);
+    events.Notify(TX_EVENT);
   }
 
   void NetworkClient::Stop(void) {
