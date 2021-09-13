@@ -25,6 +25,9 @@
     </ClInclude>
     <ClInclude Include="Packet.h" />
     <ClInclude Include="NetEvent.h" />
+    <ClInclude Include="NetEventLoopback.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp">
@@ -40,6 +43,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="NetworkServer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="NetEvent.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

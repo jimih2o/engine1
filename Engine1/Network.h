@@ -59,7 +59,7 @@ namespace engine1 {
     void rxLoop(void);
   };
 
-  class NetworkServer : public iEngineObject {
+  class NetworkServer : public iEngineObject, public iNetEventManager {
   public:
     struct Config {
       const uint16_t rxPort;

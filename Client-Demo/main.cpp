@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
     uint8_t DUMMY_PAYLOAD[] = "Test packet infrastructure....\n";
 
     while (1) {
-      engine.GetEngineResource<engine1::NetworkClient>("Network")->SendRawDataToHost(DUMMY_PAYLOAD, sizeof(DUMMY_PAYLOAD));
+      //engine.GetEngineResource<engine1::NetworkClient>("Network")->SendRawDataToHost(DUMMY_PAYLOAD, sizeof(DUMMY_PAYLOAD));
       Sleep(5000);
     }
 
