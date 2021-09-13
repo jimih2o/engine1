@@ -144,18 +144,22 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="NetEvent.h" />
     <ClInclude Include="NetEventLoopback.h" />
+    <ClInclude Include="NetEventTypes.h" />
     <ClInclude Include="Network.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Socket.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="engine1.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="NetEvent.cpp" />
     <ClCompile Include="Network.cpp" />
     <ClCompile Include="NetworkClient.cpp" />
     <ClCompile Include="NetworkServer.cpp" />
     <ClCompile Include="Socket.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

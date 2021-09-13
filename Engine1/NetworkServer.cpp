@@ -41,12 +41,8 @@ namespace engine1 {
         case RX_EVENT:
           while (rxQueue.IsEmpty() == false) {
             // handle new rx data
-            // TODO dispatcher
             RoutablePacket p = rxQueue.Pop();
-
-            //TESTING REMOVE -- perform server side loop back
-            txQueue.Push(p);
-            events.Notify(TX_EVENT);
+            Route(*reinterpret_cast<NetEventType const *>(p.packet.Payload()), p.packet.Payload() + sizeof(NetEventType), p.packet.PayloadSize() - sizeof(NetEventType));
           }
           break;
 
@@ -86,6 +82,25 @@ namespace engine1 {
     }
 
     delete[]buffer;
+  }
+
+
+  void NetworkServer::AsyncProcessEventTransmission_External(iNetEvent* pEvent, uint8_t const* bytes, uint16_t len) {
+    // broadcast to all registered clients
+    for (auto addrPort : clientMap) {
+      RoutablePacket rp;
+
+      rp.addr = addrPort.first;
+      rp.port = addrPort.second;
+
+      NetEventType e = pEvent->GetUniqueIdentifier();
+      rp.packet.Append(&e, sizeof(Event::Type));
+      rp.packet.Append(bytes, len);
+
+      txQueue.Push(rp);
+    }
+    // set TX_EVENT only after filling the queue (to avoid unnecessary packet traffic)
+    events.Notify(TX_EVENT);
   }
 
   void NetworkServer::Stop(void) {

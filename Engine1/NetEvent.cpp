@@ -1,6 +1,12 @@
 #include "NetEvent.h"
 
 namespace engine1 {
+  iNetEvent::iNetEvent() {
+    GetResource<iNetEventManager>("Network")->Register(this);
+  }
+  iNetEvent::~iNetEvent() {
+    GetResource<iNetEventManager>("Network")->Unregister(this);
+  }
 
   void iNetEvent::AsyncOnEventReceived_NetThread(uint8_t const* data, uint16_t len) {
     std::vector<uint8_t> nbuf(len);
@@ -8,14 +14,10 @@ namespace engine1 {
       nbuf.push_back(data[i]);
 
     rawData.Push(nbuf);
-    GetDispatchEvent().Notify(GetEventIdentifier());
+    GetDispatchEvent().Notify(GetUniqueIdentifier());
   }
 
   void iNetEvent::Send(uint8_t const* data, uint16_t len) {
-    eventManager->TransmitEvent(GetEventIdentifier(), data, len);
-  }
-
-  void iNetEvent::SetManager(iNetEventManager* manager) {
-    eventManager = manager;
+    GetResource<iNetEventManager>("Network")->TransmitEvent(this, data, len);
   }
 }

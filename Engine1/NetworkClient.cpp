@@ -44,7 +44,8 @@ namespace engine1 {
           while (rxQueue.IsEmpty() == false) {
             RoutablePacket rp = rxQueue.Pop();
             config.log << ToString(rp.packet) << "\n\n";
-            //TODO route
+
+            Route(*reinterpret_cast<NetEventType const*>(rp.packet.Payload()), rp.packet.Payload() + sizeof(NetEventType), rp.packet.PayloadSize() - sizeof(NetEventType));
           }
           break;
 
@@ -84,7 +85,7 @@ namespace engine1 {
   void NetworkClient::AsyncProcessEventTransmission_External(iNetEvent* pEvent, uint8_t const* bytes, uint16_t len) {
     // we are the client, so we only send data to the server node
     Packet p;
-    Event::Type e = pEvent->GetEventIdentifier();
+    NetEventType e = pEvent->GetUniqueIdentifier();
     p.Append(&e, sizeof(Event::Type));
     p.Append(bytes, len);
 

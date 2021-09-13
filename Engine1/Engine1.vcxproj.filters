@@ -28,6 +28,10 @@
     <ClInclude Include="NetEventLoopback.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="NetEventTypes.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp">
@@ -46,6 +50,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="NetEvent.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="engine1.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

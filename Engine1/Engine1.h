@@ -45,6 +45,7 @@ namespace engine1 {
     }
   };
 
+
   // class for major engine feature components: graphics, networking, events, etc.
   class iEngineObject : public iComponent {
   public:
@@ -54,11 +55,18 @@ namespace engine1 {
     virtual bool IsContextValid(void) = 0;
   };
 
+  class EngineManager;
+  void SetEngineInstance(EngineManager* pEngine);
+
   // first major top level collection for game engine context
   class EngineManager : public iEngineObject {
     std::map<String, iComponent*> namedObjects;
 
   public:
+    EngineManager() {
+      SetEngineInstance(this);
+    }
+
     template<typename ComponentType, typename... ConstructorArgs>
     ComponentType* CreateObject(String const& name, ConstructorArgs... args) {
       ComponentType* object = new ComponentType(args...);
@@ -110,5 +118,23 @@ namespace engine1 {
       return valid;
     }
   };
+
+  void SetEngineInstance(EngineManager* pEngine);
+
+  template <typename T>
+  T* GetResource(String const& name) {
+    return dynamic_cast<T*>(GetResource<iEngineObject>(name));
+  }
+
+  template<>
+  iEngineObject* GetResource(String const& name);
+
+  template <typename T>
+  T* GetObject(String const& name) {
+    return dynamic_cast<T*>(GetObject<iComponent>(name));
+  }
+
+  template<>
+  iComponent* GetObject(String const& name);
 }
 

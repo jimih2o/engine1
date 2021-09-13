@@ -165,6 +165,14 @@ namespace engine1 {
 
     std::vector<uint8_t> const& GetRawPacket(void) const { return bytes; }
 
+    uint8_t const* Payload(void) const {
+      return &bytes.data()[payloadOffset];
+    }
+
+    uint16_t PayloadSize(void) const {
+      return (uint16_t)bytes.size() - payloadOffset;
+    }
+
     void WritePayload(uint32_t index, uint8_t const* data, uint16_t len) {
       if (len > MAX_PAYLOAD_SIZE)
         len = MAX_PAYLOAD_SIZE;

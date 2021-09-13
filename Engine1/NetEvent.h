@@ -3,51 +3,89 @@
 
 #include "Event.h"
 #include "Queue.h"
+#include "NetEventTypes.h"
 
 #include <map>
 #include <vector>
+#include <list>
 
 namespace engine1 {
   class iNetEventManager;
 
   class iNetEvent {
-    iNetEventManager* eventManager;
-
   protected:
     Queue < std::vector<uint8_t> > rawData;
 
   public:
-    virtual Event::Type GetEventIdentifier() const = 0;
-    virtual uint16_t    GetPayloadLength() const = 0;
+    iNetEvent();
+    virtual ~iNetEvent();
+
+    virtual NetEventType GetUniqueIdentifier() const = 0;
+    virtual Event::Type GetEventType() const = 0;
     virtual bool        IsCritical() const = 0;
     virtual Event&      GetDispatchEvent() = 0;
 
     void AsyncOnEventReceived_NetThread(uint8_t const* data, uint16_t len);
     void Send(uint8_t const* data, uint16_t len);
-    void SetManager(iNetEventManager* manager);
   };
 
   class iNetEventManager {
-  public:
-    void RegisterNewEventType(iNetEvent* pEvent) {
-      if (registry.find(pEvent->GetEventIdentifier()) != registry.end()) {
-        throw String("Double Registration for net event #") + ToString(pEvent->GetEventIdentifier());
-      }
+    std::map< NetEventType, std::list< iNetEvent* > > *pRegistry;
 
-      pEvent->SetManager(this);
-      registry[pEvent->GetEventIdentifier()] = pEvent;
+  public:
+    iNetEventManager() {
+      pRegistry = new std::map< NetEventType, std::list< iNetEvent* > >();
     }
 
-    void TransmitEvent(Event::Type identifier, uint8_t const* data, uint32_t len) {
+    ~iNetEventManager() {
+      delete pRegistry;
+    }
+
+    void Register(iNetEvent* pNetEvent) {
+      auto listing = pRegistry->find(pNetEvent->GetUniqueIdentifier());
+      if (listing != pRegistry->end()) {
+        listing->second.push_back(pNetEvent);
+      }
+      else {
+        auto obj = pRegistry->insert(std::make_pair(pNetEvent->GetUniqueIdentifier(), std::list<iNetEvent*>()));
+        obj.first->second.push_back(pNetEvent);
+      }
+    }
+
+    void Unregister(iNetEvent* pNetEvent) {
+      auto obj = pRegistry->find(pNetEvent->GetUniqueIdentifier());
+      if (obj != pRegistry->end()) {
+        std::list<iNetEvent*>& listing = obj->second;
+
+        auto iter = listing.begin();
+        for (; iter != listing.end(); ++iter) {
+          if (*iter == pNetEvent) {
+            break;
+          }
+        }
+
+        if (iter != listing.end())
+          listing.erase(iter);
+      }
+    }
+
+    void TransmitEvent(iNetEvent* pNetEvent, uint8_t const* data, uint32_t len) {
       // TODO critical infrastructure
-      AsyncProcessEventTransmission_External(registry[identifier], data, len);
+      AsyncProcessEventTransmission_External(pNetEvent, data, len);
     }
 
   protected:
+    void Route(NetEventType type, uint8_t const* bytes, uint16_t len) {
+      auto listing = pRegistry->at(type);
+
+      for (auto netObj : listing) {
+        netObj->AsyncOnEventReceived_NetThread(bytes, len);
+      }
+
+    }
+
     virtual void AsyncProcessEventTransmission_External(iNetEvent* pEvent, uint8_t const* bytes, uint16_t len) = 0;
 
-  private:
-    std::map<Event::Type, iNetEvent*> registry;
   };
 
 }

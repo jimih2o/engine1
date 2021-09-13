@@ -73,6 +73,9 @@ namespace engine1 {
     virtual void Join(void);
     virtual bool IsContextValid(void);
 
+  protected:
+    virtual void AsyncProcessEventTransmission_External(iNetEvent* pEvent, uint8_t const* bytes, uint16_t len) override;
+
   private:
     Config      config;
     Socket      socket;
